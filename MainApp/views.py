@@ -8,5 +8,3 @@ def home(request):
             <strong>Автор</strong>: <i>Белоусов А.И.</i>
             '''
     return HttpResponse(text)
-
-def Home.as_view()
