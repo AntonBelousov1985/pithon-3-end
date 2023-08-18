@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
+from MainApp.models import Item
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 
@@ -40,11 +42,13 @@ def about(request):
     Фамилия: <b>{author['Фамилия']}</b><br>
     телефон: <b>{author['телефон']}</b><br>
     email: <b>{author['email']}</b><br>
+    email: <b>{author['email']}</b><br><br>
+    <a href='/'> Home </a>
     """
     return HttpResponse(result)
 
 
-def get_item(request, id):
+def get_item(request, item_id):
     """ По указанному id возвращает имя и количество"""
     for item in items:
         if item["id"] == id:
