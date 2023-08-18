@@ -25,10 +25,6 @@ items = [
 
 
 def home(request):
- #   text='''<h1>"Изучаем django"</h1>
- #           <strong>Автор</strong>: <i>Белоусов А.И.</i>
- #           '''
-#    return HttpResponse(text)
     context = {
         "name": "Белоусов Антон Иосифович",
         "email": "my_mail@mail.ru"
@@ -37,6 +33,9 @@ def home(request):
 
 def about(request):
     result = f"""
+    <header>
+    /<a href="/">Home</a> / <a href="/items"> Items</a> / <a href="/about"> About</a>
+    </header>
     Имя: <b>{author['Имя']}</b><br>
     Отчество: <b>{author['Отчество']}</b><br>
     Фамилия: <b>{author['Фамилия']}</b><br>
@@ -61,6 +60,6 @@ def items_list(request):
     context = {
         "items": items
     }
-
+    return render(request, "items-list.html", context) 
 
 
