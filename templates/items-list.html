@@ -19,9 +19,11 @@
         /<a href="/">Home</a> / <a href="/items"> Items</a> / <a href="/about"> About</a>
     </header>
     <h2> Список товаров </h2>
+
         {% for item in items %}
-            <div> <a href='/item/{{ item.id }}'>{{ item.name }}</a>, Количество: {{item.quantity}} </div>
+            <div><a href='/item/{{ item.id }}'>{{ item.name }}</a></div>
         {% endfor %}
     <br><br>
+    <a href='/'> Home </a>
 
 </html>
