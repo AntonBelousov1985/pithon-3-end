@@ -39,16 +39,20 @@ def about(request):
 def get_item(request, item_id):
     """ По указанному id возвращает имя и количество"""
     try:
-        items=Item.objects.get(id=item_id)
+        item = Item.objects.get(id=item_id)
+        colors = []
+        # Проверяем, есть ли хоть один цвет у товара
+        if item.colors.exists():
+            colors = item.colors.all()       
+
     except ObjectDoesNotExist:
-        return HttpResponseNotFound(f'item with id={item_id} not found')
-        
+        return HttpResponseNotFound(f'Item with id = {item_id} not found.')
     else:
         context = {
-            "item": item
+            "item": item,
+            "colors": colors
         }
-        return render(request, "item-page.html", context)
-    return HttpResponseNotFound(f'Item with id = {item_id} not found.')
+    return render(request, "item-page.html", context)
 
 def items_list(request):
     items=Item.objects.all()

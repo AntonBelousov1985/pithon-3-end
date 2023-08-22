@@ -1,21 +1,30 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8"> 
-    <title>Item page</title>
-</head>
-<body>
-    <header>
-        /<a href="/">Home</a> / <a href="/items"> Items</a> / <a href="/about"> About</a>
-    </header>
-    <h1>{{ item.name }}</h1>
-    <div>
-        Количество: {{ item.count|default:"Товар отсутствует на складе"}}
-    </div>
-    <div>
-        Описание: {{ item.description }}
-    </div>
-    <br>
-    <a href="/items">Вернуться к списку товаров</a>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Item page: {{ item.name }}
+{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% include 'inc_header.html' %}
+    <h1>Товар</h1>
+    <span style="font-size: large;"><b>{{ item.name }}</b></span><br>
+    <span style="font-size: large;">{{ item.brand }}</span><br>
+    Описание товара:<br>
+    <span style="font-size: medium;">{{ item.description }}</span><br>
+    Количество: {{ item.count | default:"Товар отсутствует на складе"}}<br>
+
+    <ul class="ul_no_mark">
+        {% for color in colors %}
+            <li><div class="div_color" style="background-color:{{color.name}};"></div>&nbsp;&nbsp;{{ color.name }}</li>
+        {% endfor %}
+    </ul>
+    <br/><br/>
+    <a href="{% url 'items-list' %}">Back to items list</a><br/><br/>
+
+{% endblock %}
