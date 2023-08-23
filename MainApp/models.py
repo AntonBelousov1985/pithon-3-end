@@ -1,5 +1,11 @@
 from django.db import models
 
+LANGS = (
+    ('py', "Python"),
+    ('js', "JavaScript"),
+    ('cpp', "C++")
+)
+
 
 class Snippet(models.Model):
     name = models.CharField(max_length=100)
