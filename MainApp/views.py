@@ -13,5 +13,6 @@ def add_snippet_page(request):
 
 
 def snippets_page(request):
+    snippets=Snippet.objects.all()
     context = {'pagename': 'Просмотр сниппетов'}
     return render(request, 'pages/view_snippets.html', context)
