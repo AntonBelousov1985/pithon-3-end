@@ -21,7 +21,7 @@ def add_snippet_page(request):
             'pagename': 'Добавление нового сниппета',
             'form': form
         }
-        return render(request, 'pages/add_snippet', context)
+        return render(request, 'pages/add_snippet.html', context)
 
     # Хотим создать новый Сниппет(данные от формы)
     if request.method == "POST":
@@ -32,7 +32,7 @@ def add_snippet_page(request):
                 snippet.user = request.user
                 snippet.save()
             return redirect("snippets-list")
-        return render(request,'pages/add_snippet', {'form': form})
+        return render(request,'pages/add_snippet.html', {'form': form})
 
 
 def snippets_page(request):
