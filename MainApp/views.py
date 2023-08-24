@@ -1,7 +1,10 @@
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from MainApp.models import Snippet
 from MainApp.forms import SnippetForm
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import auth
+
 
 
 def index_page(request):
@@ -17,7 +20,7 @@ def add_snippet_page(request):
             'pagename': 'Добавление нового сниппета',
             'form': form
         }
-        return render(request, 'pages/add_snippet_custom', context)
+        return render(request, 'pages/add_snippet', context)
 
     # Хотим создать новый Сниппет(данные от формы)
     if request.method == "POST":
@@ -25,7 +28,7 @@ def add_snippet_page(request):
         if form.is_valid():
             form.save()
             return redirect("snippets-list")
-        return render(request,'pages/add_snippet_custom', {'form': form})
+        return render(request,'pages/add_snippet', {'form': form})
 
 
 def snippets_page(request):
@@ -37,18 +40,61 @@ def snippets_page(request):
     return render(request, 'pages/view_snippets.html', context)
 
 def snippet_detail(request, snippet_id):
-    snippet = Snippet.objects.get(id=snippet_id)
+    try:
+        snippet = Snippet.objects.get(id=snippet_id)
+    except ObjectDoesNotExist:
+        raise Http404
     context = {
         'pagename': 'Просмотр сниппета',
-        'snippet': snippet
+                'snippet': snippet,
+                'type': 'view'
         }
     return render(request, 'pages/snippet_detail.html', context)
 
+def snippet_delete(request, snippet_id):
+    snippet = Snippet.objects.get(id=snippet_id)
+    snippet.delete()
+    # Перенаправление на ту страницу, с которой пришел
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
-def create_snippet(request):
+def snippet_edit(request, snippet_id):
+    try:
+        snippet = Snippet.objects.get(id=snippet_id)
+    except ObjectDoesNotExist:
+        raise Http404
+    # Хотим получить страницу данных сниппета
+    if request.method == "GET":
+        context = {
+            'pagename': 'Редактирование сниппета',
+            'snippet': snippet,
+            'type': 'edit'
+        }
+        return render(request, 'pages/snippet_detail.html', context)
+
+    # Хотим создать новый Сниппет(данные от формы)
     if request.method == "POST":
-        form = SnippetForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("snippets-list")
-    return render(request,'add_snippet.html', {'form': form})
+        data_form = request.POST
+        snippet.name = data_form["name"]
+        snippet.lang = data_form["lang"]
+        snippet.code = data_form["code"]
+        snippet.creation_date = data_form["creation_date"]
+        snippet.save()
+        return redirect("snippets-list")
+
+def login(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = auth.authenticate(request, username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+        else:
+            pass
+    return redirect('home')
+
+
+def logout(request):
+    auth.logout(request)
+    return redirect(request.META.get("HTTP_REFERER", '/'))
+
+
